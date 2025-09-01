@@ -5,11 +5,8 @@ import {
 	anyToError,
 	deepFreeze,
 	printError,
-	revealPrivate,
-	toJSONOrString,
 	typedKeys,
 } from "@polyipseity/obsidian-plugin-library"
-import { DOMClasses2 } from "./magic.js"
 import type { TerminalPlugin } from "./main.js"
 import changelogMd from "../CHANGELOG.md"
 import readmeMd from "../README.md"
@@ -23,25 +20,6 @@ export const DOCUMENTATIONS = deepFreeze({
 			iconI18nKey: "asset:generic.documentations.changelog-icon",
 		})
 	},
-	donate(view: DocumentationMarkdownView.Registered) {
-		const { context, context: { app, manifest } } = view
-		revealPrivate(context, [app], app0 => {
-			const { setting: { settingTabs } } = app0
-			for (const tab of settingTabs) {
-				const { id, containerEl: { ownerDocument } } = tab
-				if (id !== "community-plugins") { continue }
-				const div = ownerDocument.createElement("div")
-				tab.renderInstalledPlugin(manifest, div)
-				const element = div.querySelector(
-					`.${DOMClasses2.SVG_ICON}.${DOMClasses2.LUCIDE_HEART}`,
-				)?.parentElement
-				if (!element) { throw new Error(toJSONOrString(div)) }
-				element.click()
-				return
-			}
-			throw new Error(toJSONOrString(settingTabs))
-		}, error => { throw error })
-	},
 	async readme(view: DocumentationMarkdownView.Registered, active: boolean) {
 		await view.open(active, {
 			data: await readmeMd,
@@ -50,7 +28,7 @@ export const DOCUMENTATIONS = deepFreeze({
 		})
 	},
 })
-export type DocumentationKeys = readonly ["changelog", "donate", "readme"]
+export type DocumentationKeys = readonly ["changelog", "readme"]
 export const DOCUMENTATION_KEYS = typedKeys<DocumentationKeys>()(DOCUMENTATIONS)
 
 class Loaded0 {

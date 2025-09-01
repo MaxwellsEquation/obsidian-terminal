@@ -189,10 +189,16 @@ export function loadTerminal(context: TerminalPlugin): void {
 			}
 			addCommand(
 				context,
-				() => i18n.t(`commands.open-terminal-${cwd}`, {
-					interpolation: { escapeValue: false },
-					type,
-				}),
+				() => {
+					// Special case: rename "Open root directory in terminal: Integrated" to "New terminal"
+					if (cwd === "root" && type === "integrated") {
+						return "New terminal"
+					}
+					return i18n.t(`commands.open-terminal-${cwd}`, {
+						interpolation: { escapeValue: false },
+						type,
+					})
+				},
 				{
 					checkCallback(checking) {
 						if (!settings.value.addToCommand) { return false }
